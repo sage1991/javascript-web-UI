@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #scrollView {
+            height: 500px;
+            width: 500px;
+            overflow: hidden;
+            margin: auto;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        
+        .content {
+            height: 200px;
+            width: 100%;
+            
+        }
+        
+        .content:nth-child(even) {
+            background-color: coral;
+        }
+        
+        #swipeView {
+            width: 500px;
+            height: 300px;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            margin: auto;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: blanchedalmond;
+        }
+        
+        #swipeView div {
+            width: 5000px;
+            margin: auto;
+        }
+        
+        .card {
+            display: inline-block;
+            width: 400px;
+            height: 240px;
+            margin-left: 20px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="scrollView">
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+        <div class="content"></div>
+    </div>
+    
+    <div id="swipeView">
+        <div>
+            <span class="card">card1</span>
+            <span class="card">card2</span>
+            <span class="card">card3</span>
+            <span class="card">card4</span>
+            <span class="card">card5</span>
+        </div>
+    </div>
+    
+    <script>
+        
+        // Method 1
+        class Swiper {
+            
+            constructor(element) {
+                this.swipeTarget = element;  // swipe를 적용 시킬 HTML element
+                this.isClicked = false;      // 현재 클릭상태를 나타내는 변수
+                this.velocity = 0;           // 현재 마우스의 속도(단위 : px/ms)
+                
+                /* 속도 계산용 전역변수 */
+                this.yOld = null;            // 마우스의 이전 위치
+                this.timeOld = null;         // 마우스 이전 위치에서의 시간
+                this.direction = null;       // swipe 방향
+                this.damping = 1;            // 저항(상수)
+                this.DPI = 1                 // 스크롤 민감도
+                this.unitTime = 1000/60;     // requestAnimationFrame() 함수의 실행 빈도(60 프레임)
+                
+                this.animationId = null;     // requestAnimationFrame() 함수가 반환하는 현재 실행중인 애니메이션의 고유 ID
+                
+            }
+            
+            /* 초기화 메소드 */
+            init() {
+                var scope = this;
+                
+                // 마우스 버튼 press 상태 이벤트 리스너
+                this.swipeTarget.addEventListener("touchstart", function(event) {
+                    console.log("touchdown");
+                    scope.isClicked = true;  // 현재 클릭 상태를 true로 변경
+                    scope.velocity = 0;      // 속도를 0으로 초기화( -> 현재 swipe가 실행중이라면 멈추게 됨)
+                });
+                
+                // 마우스 버튼 release 상태 이벤트 리스너
+                this.swipeTarget.addEventListener("touchend", function(event) {
+                    console.log("touchup");
+                    scope.isClicked = false;  // 현재 클릭 상태를 false로 변경
+                    scope.yOld = null;        // 다음 애니메이션을 위해 마우스의 이전 위치를 초기화
+                    scope.timeOld = null;     // 다음 애니메이션을 위해 마우스 이전 위치에서의 시간을 초기화
+                    scope.smoothScroll();     // swipe animation 실행
+                });
+                
+                // 마우스 움직임 이벤트 리스너
+                this.swipeTarget.addEventListener("touchmove", function(event) {
+                    console.log("touchmove");
+                    // 현재 마우스가 클릭된 상태로 움직이고 있을때
+                    if(scope.isClicked) {
+                        let distance = scope.doScrollBehavior(event);  // 마우스 움직임에 따라 스크롤 실행
+                        scope.calculateMouseSpeed(distance);           // 스크롤된 거리를 이용하여 마우스 움직임 속도를 계산
+                    }
+                });
+                
+            }
+            
+            
+            /* 스크롤 메소드 */
+            doScrollBehavior(event) {
+                
+                let deltaY = 0;  // 마우스 위치 변화량
+                var currentMoustPosition = event.targetTouches[0].clientY;  // 현재 마우스의 위치
+                
+                // 이전 위치에 대한 값이 있을 경우
+                if(this.yOld) {
+                    deltaY = (currentMoustPosition - this.yOld)*this.DPI;  // 마우스 위치 변화량 계산
+                    this.swipeTarget.scrollTop -= deltaY;                 // 마우스 위치 변화량 만큼 스크롤
+                }
+                
+                this.yOld = currentMoustPosition;  // 다음 계산을 위해 마우스 이전 위치 갱신
+                
+                return deltaY;
+            }
+            
+            
+            /* 마우스 속도 계산 메소드 */
+            calculateMouseSpeed(distance) {
+                
+                var currentTime = new Date();  // 현재 시점에서의 timeStamp
+                
+                // 이전 위치에서의 timeStamp가 존재 할 경우
+                if(this.timeOld) {
+                    let deltaT = currentTime - this.timeOld;               // 시간 변화량 계산
+                    this.velocity = (distance / deltaT)*(this.unitTime);   // 단위 시간 당 속도 계산
+                    
+                    // 속도의 부호에 따라 운동 방향 설정
+                    if(this.velocity > 0) {
+                        this.direction = +1;     // 아래 방향으로 운동
+                    } else {
+                        this.direction = -1;     // 위 방향으로 운동
+                    }
+                }
+                
+                this.timeOld = currentTime;  // 다음 계산을 위해 이전 위치에서의 시간 갱신
+            }
+            
+            
+            /* 마우스 release시 속도에 맞춰 smooth scroll하는 메소드 */
+            smoothScroll() {
+                this.animationId = window.requestAnimationFrame(this.animate.bind(this));
+            }
+            
+            /* smooth scroll 메소드 */
+            animate(times) {
+                
+                if(this.swipeTarget.scrollTop <= 0) {
+                    this.swipeTarget.scrollTop = 0;
+                } else if(this.swipeTarget.scrollHeight <= this.swipeTarget.scrollTop + this.swipeTarget.clientHeight) {
+                    this.swipeTarget.scrollTop = this.swipeTarget.scrollHeight - this.swipeTarget.clientHeight;
+                } else if(this.velocity == 0 || this.swipeTarget.scrollTop == 0 || this.swipeTarget.scrollTop == this.swipeTarget.scrollHeight - this.swipeTarget.clientHeight) {
+                    cancelAnimationFrame(this.animationId);
+                } else {
+                    this.swipeTarget.scrollTop -= this.velocity;
+                    window.requestAnimationFrame(this.animate.bind(this));
+                }
+                
+                this.velocity -= this.direction*this.damping;
+                
+                if((this.direction > 0 && this.velocity < 0) || (this.direction < 0 && this.velocity > 0)) {
+                    this.velocity = 0;
+                }
+            }
+        }
+        
+        const scrollView = document.getElementById("scrollView");
+        
+        var swiper = new Swiper(scrollView);
+        swiper.init();
+    </script>
+</body>
+</html>

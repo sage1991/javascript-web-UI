@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        #pullview {
+            height: 700px;
+            width: 500px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin: auto;
+        }
+        #ref {
+            height: 0px;
+            background: linear-gradient(#eee, #fff);
+            overflow: hidden;
+            text-align: center;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div id="pullview">
+        <div id="ref">당겨서 새로고침</div>
+    </div>
+    <script>
+        const pullview = document.getElementById("pullview");
+        const ref = document.getElementById("ref");
+        var yOld = null;
+        
+        pullview.addEventListener("touchmove", doPullingMotion);
+        pullview.addEventListener("touchend", function() {
+            ref.style.height = "0px";
+            ref.style.transition = "0.2s";
+        });
+        
+        function doPullingMotion(event) {
+            
+            let touch = event.targetTouches[0];
+            if(!yOld) {
+                yOld = touch.clientY;
+            } else {
+                let yNew = touch.clientY;
+                let height = ref.clientHeight;
+                let deltaY = (yNew - yOld)*10;
+                if(height + deltaY < 100) {
+                    ref.style.height = (height + deltaY) + "px";
+                    ref.style.transition = "0.1s";
+                }
+                yOld = yNew;
+            }
+            
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        #svg1 {
+            height: 140px;
+            width: 500px;
+            border: 1px solid #eee;
+        }
+        #ellipse1 {
+            fill : yellow;
+            stroke : purple;
+            stroke-width : 2px;
+        }
+        
+        #svg2 {
+            height: 150px;
+            width: 500px;
+            border: 1px solid #eee;
+        }
+        
+        #svg3 {
+            height: 100px;
+            width: 500px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h3>cx, cy attributes</h3>
+    <p>the x and y coordinates of the center of the ellipse</p>
+    
+    <h3>rx, ry attributes</h3>
+    <ul>
+        <li><b>rx</b> : horizontal radius</li>
+        <li><b>ry</b> : vertical radius</li>
+    </ul>
+    
+    <svg id="svg1">
+        <ellipse id="ellipse1" cx="200" cy="80" rx="100" ry="50"></ellipse>
+    </svg>
+    
+    <svg id="svg2">
+        <ellipse cx="240" cy="100" rx="220" ry="30" style="fill:purple"></ellipse>
+        <ellipse cx="220" cy="70" rx="190" ry="20" style="fill:lime"></ellipse>
+        <ellipse cx="210" cy="45" rx="170" ry="15" style="fill:yellow"></ellipse>
+    </svg>
+    
+    <svg id="svg3">
+        <ellipse cx="240" cy="50" rx="220" ry="30" style="fill:yellow"></ellipse>
+        <ellipse cx="220" cy="50" rx="190" ry="20" style="fill:white"></ellipse>
+    </svg>
+</body>
+</html>

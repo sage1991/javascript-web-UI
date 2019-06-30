@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        #ex1_svg {
+            width: 400px;
+            height: 110px;
+            border: 1px solid black;
+        }
+        #ex1_rect {
+            width: 300px;
+            height: 100px;
+            fill : rgb(0, 0, 255);
+            stroke-width : 3px;
+            stroke : rgb(0, 0, 0);
+        }
+        
+        #ex2_svg {
+            width: 400px;
+            height: 180px;
+            border: 1px solid black;
+        }
+        
+        #ex2_rect {
+            width: 150px;
+            height: 150px;
+            fill : blue;
+            stroke : pink;
+            stroke-width : 5px;
+            fill-opacity : 0.1;
+            stroke-opacity : 0.9;
+        }
+        
+        #ex3_svg {
+            width: 400px;
+            height: 180px;
+            border: 1px solid black;
+        }
+        
+        #ex3_rect {
+            width: 150px;
+            height: 150px;
+            fill : blue;
+            stroke : pink;
+            stroke-width : 5px;
+            opacity: 0.5;
+        }
+        
+        #ex4_svg {
+            width: 400px;
+            height: 180px;
+            border: 1px solid black;
+        }
+        
+        #ex4_rect {
+            width: 150px;
+            height: 150px;
+            fill : red;
+            stroke : black;
+            stroke-width : 5px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    
+    <h3>x, y attributes</h3>
+    <ul>
+        <li><b>x</b> : left margin</li>
+        <li><b>y</b> : top margin</li>
+    </ul>
+    
+    <h3>rx, ry attributes</h3>
+    <p>rounds corners of the rectangle</p>
+    
+    <svg id="ex1_svg">
+        <rect id="ex1_rect"></rect>
+        Sorry, your browser does not support inline SVG.
+    </svg>
+    
+    
+    <svg id="ex2_svg">
+        <rect id="ex2_rect" x="50" y="10"></rect>
+        Sorry, your browser does not support inline SVG.
+    </svg>
+    
+    
+    <svg id="ex3_svg">
+        <rect id="ex3_rect" x="50" y="20"></rect>
+        Sorry, your browser does not support inline SVG.
+    </svg>
+    
+    <svg id="ex4_svg">
+        <rect id="ex4_rect"x="50" y="20" rx="20" ry="20"></rect>
+        Sorry, your browser does not support inline SVG.
+    </svg>
+    
+    
+</body>
+</html>

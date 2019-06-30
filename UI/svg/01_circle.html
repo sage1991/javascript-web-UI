@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My First SVG</title>
+    <style>
+        svg {
+            border: 1px solid black;
+            width: 500px;
+            height: 500px;
+        }
+        circle {
+            stroke : skyblue;
+            stroke-width : 10px;
+            stroke-linecap : round;
+            fill : blue;
+        }
+    </style>
+</head>
+<body>
+    <h3>cx, cy attributes</h3>
+    <p>x and y coordinates of the center ot the circle.</p>
+    <p>if omitted, circle's center is set to (0,0)</p>
+    
+    <h3>r attribute</h3>
+    <p>defines the radius of the circle</p>
+    
+    <svg>
+        <circle cx="250" cy="250" r="200"></circle>
+        sorry, your browser does not support inline svg...
+    </svg>
+</body>
+</html>
