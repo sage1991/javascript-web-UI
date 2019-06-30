@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        svg {
+            width: 500px;
+            height: 500px;
+            border: 1px solid black;
+            border-radius: 50%;
+        }
+        path {
+            stroke-width : 10px;
+            stroke-linecap : round;
+            
+        }
+        #p1 {
+            stroke : skyblue;
+            fill : skyblue;
+        }
+        #p2 {
+            stroke : #2727e6;
+            fill : #2727e6;
+            opacity: 0.9;
+        }
+        #target {
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            line-height: 15;
+        }
+        div {
+            position: relative;
+            border: 1px solid black;
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1 id="target">0%</h1>
+        <svg>
+            <path id="p1" d="M10,10 L50,100 L90,50"></path>
+            <path id="p2"></path>
+        </svg>
+    </div>
+    <script>
+        
+        let target = document.querySelector("#target");
+        let xs = [];
+        for(var i = 0; i < 500; i++) {
+            xs.push(i);
+        }
+        
+        let t = 0;
+        
+        const MAX_HEIGHT = 500;                // SVG height
+        const PERCENT_END = 0.8;                      // 목표 퍼센트
+        const HEIGHT_END = MAX_HEIGHT * PERCENT_END;     // 목표 높이
+        
+        let currentHeight = 500;                  // 현재 높이
+        let currentPercent = (MAX_HEIGHT - currentHeight) * 100 / MAX_HEIGHT;   // 현재 퍼센트
+        
+        function animate() {
+            let points1 = xs.map(x => {
+                let y = currentHeight + 15 * Math.sin((0.8*t + x)/50);
+                return [x, y];
+            });
+            
+            let points2 = xs.map(x => {
+                let y = currentHeight + 15 * Math.sin(((-1)*t + x)/50 + 300);
+                return [x, y];
+            });
+            
+            let path1 = "M" + points1.map(p => {
+                return p[0] + "," + p[1];
+            }).join(" L") + "L500,500 L0,500 Z";
+            
+           
+            
+             let path2 = "M" + points2.map(p => {
+                return p[0] + "," + p[1];
+            }).join(" L") + "L500,500 L0,500 Z";
+            
+            document.querySelector("#p1").setAttribute("d", path1);
+            document.querySelector("#p2").setAttribute("d", path2);
+            
+            t += 5;
+            if(currentHeight >= (MAX_HEIGHT- HEIGHT_END)) {
+                currentHeight -= 2;
+                currentPercent = (MAX_HEIGHT - currentHeight) * 100 / MAX_HEIGHT;
+                target.innerHTML = Math.floor(currentPercent) + "%";
+            }
+            
+            if(currentPercent > 50) {
+                target.style.transition = "0.5s";
+                target.style.color = "white";
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
